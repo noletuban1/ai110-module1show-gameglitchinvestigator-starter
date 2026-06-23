@@ -1,54 +1,46 @@
 # 🎮 Game Glitch Investigator: The Impossible Guesser
 
-## 🚨 The Situation
+## Purpose
 
-You asked an AI to build a simple "Number Guessing Game" using Streamlit.
-It wrote the code, ran away, and now the game is unplayable. 
+This is a Streamlit number-guessing game. The goal is to guess the secret number before the allowed attempts run out. I used this project to investigate AI-generated bugs, refactor the game logic, and verify fixes with pytest.
 
-- You can't win.
-- The hints lie to you.
-- The secret number seems to have commitment issues.
+## Bugs Found and Fixed
 
-## 🛠️ Setup
+- The difficulty sidebar range did not match the main game instructions or the secret number.
+- The game started with one attempt already used.
+- The hints were backwards: a guess that was too high told the player to go higher.
+- The game sometimes compared an integer guess with a string secret number.
+- New Game did not reset all important state values.
 
-1. Install dependencies: `pip install -r requirements.txt`
-2. Run the broken app: `python -m streamlit run app.py`
+I moved the pure game functions into `logic_utils.py`, used `st.session_state` for the secret number and progress, reset the whole game when needed, and added automated tests in `tests/test_game_logic.py`.
 
-## 🕵️‍♂️ Your Mission
+## Setup
 
-1. **Play the game.** Open the "Developer Debug Info" tab in the app to see the secret number. Try to win.
-2. **Find the State Bug.** Why does the secret number change every time you click "Submit"? Ask ChatGPT: *"How do I keep a variable from resetting in Streamlit when I click a button?"*
-3. **Fix the Logic.** The hints ("Higher/Lower") are wrong. Fix them.
-4. **Refactor & Test.** - Move the logic into `logic_utils.py`.
-   - Run `pytest` in your terminal.
-   - Keep fixing until all tests pass!
-
-## 📝 Document Your Experience
-
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
-
-## 📸 Demo Walkthrough
-
-Describe your fixed game in numbered steps so a reader can follow along without watching a video:
-
-1. <!-- Describe this step -->
-2. <!-- Describe this step -->
-3. <!-- Describe this step -->
-4. <!-- Describe this step -->
-5. <!-- Add more steps as needed -->
-
-**Screenshot** *(optional)*: <!-- Insert a screenshot of your fixed, winning game here -->
-
-## 🧪 Test Results
-
-```
-# Paste your pytest output here, e.g.:
-# pytest tests/
-# ========================= X passed in 0.XXs =========================
+```bash
+python -m streamlit run app.py
 ```
 
-## 🚀 Stretch Features
+Run tests with:
 
-- [ ] [If you choose to complete Challenge 4, describe the Enhanced UI changes here — a screenshot is optional]
+```bash
+python -m pytest tests -q
+```
+
+## Demo Walkthrough
+
+1. Select **Easy** difficulty. The app displays the correct range, 1 to 20, and six attempts.
+2. Open Developer Debug Info to confirm the secret number stays within the selected range.
+3. Enter a guess above the secret number. The game returns **Too High** and tells the player to try a lower number.
+4. Enter a guess below the secret number. The game returns **Too Low** and tells the player to try a higher number.
+5. Enter the correct number. The game shows a win message and calculates the final score.
+6. Click **New Game**. The secret, attempts, history, score, and game status reset correctly.
+
+## Test Results
+
+Run this command in the project folder before submitting:
+
+```bash
+python -m pytest tests -q
+```
+
+The tests cover difficulty ranges, valid and invalid input, correct high/low hints, and consistent score behavior.
